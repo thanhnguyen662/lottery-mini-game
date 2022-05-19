@@ -1,0 +1,22 @@
+FROM node:18-alpine as build
+
+WORKDIR /frontend
+
+COPY package.json yarn.lock ./
+
+RUN yarn install
+
+COPY . .
+
+RUN yarn build
+
+
+
+
+FROM caddy:2.5.1-alpine
+
+WORKDIR /frontend
+
+COPY --chown=www-data:www-data --from=build /frontend .
+
+CMD caddy file-server --root ./build --listen :3000

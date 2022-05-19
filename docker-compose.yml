@@ -1,0 +1,19 @@
+version: '3'
+services:
+  backend:
+    image: node:18-alpine
+    working_dir: /backend
+    command: yarn start
+    ports:
+      - 8000:8000
+    volumes:
+      - ./backend:/backend
+  
+  frontend:
+    image: caddy:2.5.1-alpine
+    working_dir: /frontend
+    command: caddy file-server --root ./build --listen :3000
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend:/frontend

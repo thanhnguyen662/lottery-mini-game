@@ -1,0 +1,22 @@
+version: '3'
+
+tasks:
+  greet:
+    cmds:
+      - docker compose -f docker-compose.dev.yml up -d
+
+  prod:
+    cmds:
+      - >
+        docker build \
+          --platform linux/x86_64 \
+          -t docker-backend:latest \
+          -f backend/docker/dockerfile.prod \
+          backend
+      - >
+        docker build \
+          --platform linux/x86_64 \
+          -t docker-frontend:latest \
+          -f frontend/docker/dockerfile.prod \
+          frontend
+      - docker compose -f docker-compose.prod.yml up -d
