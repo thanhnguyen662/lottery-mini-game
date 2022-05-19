@@ -22,7 +22,7 @@ const Loto = () => {
          }
          return [...prev];
       });
-   }, []);
+   }, [playRules.totalNumberPerGame]);
 
    const randomNumber = (checkArray) => {
       const random =
