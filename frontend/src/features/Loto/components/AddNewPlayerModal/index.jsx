@@ -15,10 +15,12 @@ import {
    TagCloseButton,
    TagLabel,
    Text,
+   useToast,
    VStack,
 } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 const AddNewPlayerModal = ({
    isOpen,
@@ -27,15 +29,33 @@ const AddNewPlayerModal = ({
    playRules,
    handleAddPlayer,
 }) => {
+   const toast = useToast();
    const [number, setNumber] = useState(0);
    const [formData, setFormData] = useState({
+      id: '',
       name: '',
       selectedNumbers: [],
    });
 
    const onInputChange = (key, value) => {
       if (key === 'name') {
-         return setFormData({ ...formData, name: value });
+         return setFormData({ ...formData, name: value, id: uuidv4() });
+      }
+
+      if (value < 0 || value > playRules.totalNumberPerGame) {
+         return toast({
+            status: 'error',
+            title: 'Error',
+            description: `Number must in range 0 - ${playRules.totalNumberPerGame}`,
+         });
+      }
+
+      if (formData.selectedNumbers.some((n) => n === parseInt(number))) {
+         return toast({
+            status: 'error',
+            title: 'Error',
+            description: `${number} already selected`,
+         });
       }
 
       setFormData({
@@ -78,10 +98,12 @@ const AddNewPlayerModal = ({
    };
 
    const isAddNumberDisable =
-      formData.selectedNumbers.length >= 5 ? true : false;
+      formData.selectedNumbers.length >= playRules.selectNumberPerGame
+         ? true
+         : false;
 
    return (
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} size='md'>
          <ModalOverlay />
          <ModalContent>
             <ModalHeader>Add new Player</ModalHeader>
@@ -102,6 +124,7 @@ const AddNewPlayerModal = ({
                      <FormLabel htmlFor='number'>Number</FormLabel>
                      <HStack spacing={2} w='full'>
                         <Input
+                           flex='4'
                            id='number'
                            placeholder='Enter your number'
                            type='number'
@@ -109,16 +132,18 @@ const AddNewPlayerModal = ({
                            value={number}
                         />
 
-                        {/* <Button
+                        <Button
+                           flex='1'
                            variant='outline'
                            colorScheme='blue'
                            onClick={() => onInputChange('number', number)}
                            disabled={isAddNumberDisable}
                         >
                            Add
-                        </Button> */}
+                        </Button>
 
                         <Button
+                           flex='1'
                            variant='outline'
                            colorScheme='red'
                            onClick={() => onClickRandomNumber()}
@@ -136,8 +161,8 @@ const AddNewPlayerModal = ({
                      justifyItems='start'
                      flexWrap='wrap'
                   >
-                     {formData.selectedNumbers?.map((number, index) => (
-                        <Tag fontWeight='bold' key={index} colorScheme='green'>
+                     {formData.selectedNumbers?.map((number) => (
+                        <Tag fontWeight='bold' key={number} colorScheme='green'>
                            <TagLabel>{number}</TagLabel>
                            <TagCloseButton
                               onClick={() =>

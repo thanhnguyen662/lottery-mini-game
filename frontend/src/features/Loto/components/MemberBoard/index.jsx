@@ -1,4 +1,10 @@
-import { Button, SimpleGrid, useDisclosure, VStack } from '@chakra-ui/react';
+import {
+   Button,
+   HStack,
+   SimpleGrid,
+   useDisclosure,
+   VStack,
+} from '@chakra-ui/react';
 import React from 'react';
 import AddNewPlayerModal from '../AddNewPlayerModal';
 import PlayerInfo from '../PlayerInfo';
@@ -9,18 +15,28 @@ const MemberBoard = ({
    handleAddPlayer,
    playerInfo,
    lotoRecord,
+   handleResetPlayer,
 }) => {
    const { isOpen, onOpen, onClose } = useDisclosure();
 
-   return (
-      <VStack w='full' spacing='5'>
-         <Button onClick={onOpen}>Add member</Button>
+   const onClickResetPlayer = () => {
+      handleResetPlayer();
+   };
 
-         <SimpleGrid columns={3} spacing={5} w='full'>
-            {playerInfo?.map((player, index) => (
+   return (
+      <VStack w='full' spacing={6}>
+         <HStack w='full' spacing={3}>
+            <Button onClick={onOpen} colorScheme='blue'>
+               Add player
+            </Button>
+            <Button onClick={onClickResetPlayer}>Reset player</Button>
+         </HStack>
+
+         <SimpleGrid columns={1} spacing={5} w='full'>
+            {playerInfo?.map((player) => (
                <PlayerInfo
                   player={player}
-                  key={index}
+                  key={player.id}
                   lotoRecord={lotoRecord}
                />
             ))}

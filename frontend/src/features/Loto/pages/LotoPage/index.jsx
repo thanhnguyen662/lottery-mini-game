@@ -8,9 +8,10 @@ const Loto = () => {
    const [numberArray, setNumberArray] = useState([]);
    const [lotoRecord, setLotoRecord] = useState([]);
    const [playerInfo, setPlayerInfo] = useState([]);
+   const [rank, setRank] = useState([]);
 
    const playRules = {
-      totalNumberPerGame: 99,
+      totalNumberPerGame: 20,
       selectNumberPerGame: 5,
    };
 
@@ -33,14 +34,29 @@ const Loto = () => {
    };
 
    const handleGetNumber = () => {
+      const number = randomNumber(lotoRecord);
       setLotoRecord((prev) => {
-         prev.push(randomNumber(prev));
+         prev.push(number);
          return [...prev];
       });
    };
 
    const handleAddPlayer = (playerInfoFormData) => {
       setPlayerInfo([...playerInfo, playerInfoFormData]);
+   };
+
+   const handleResetPlayer = () => {
+      setPlayerInfo((prev) => {
+         prev.length = 0;
+         return [...prev];
+      });
+   };
+
+   const handleResetNumberBoard = () => {
+      setLotoRecord((prev) => {
+         prev.length = 0;
+         return [...prev];
+      });
    };
 
    const numberCardDisabled =
@@ -50,8 +66,8 @@ const Loto = () => {
       <Main>
          <Grid
             templateColumns='repeat(24, 1fr)'
-            gap={{ base: 1, md: 6 }}
-            mt='50px'
+            gap={{ base: 3, md: 6 }}
+            my='50px'
          >
             <GridItem colSpan={{ base: 24, md: 12 }} w='full'>
                <LotoBoard
@@ -59,6 +75,7 @@ const Loto = () => {
                   numberArray={numberArray}
                   lotoRecord={lotoRecord}
                   numberCardDisabled={numberCardDisabled}
+                  handleResetNumberBoard={handleResetNumberBoard}
                />
             </GridItem>
             <GridItem colSpan={{ base: 24, md: 12 }} w='full'>
@@ -68,6 +85,7 @@ const Loto = () => {
                   handleAddPlayer={handleAddPlayer}
                   playerInfo={playerInfo}
                   lotoRecord={lotoRecord}
+                  handleResetPlayer={handleResetPlayer}
                />
             </GridItem>
          </Grid>

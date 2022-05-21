@@ -13,8 +13,9 @@ const NumberCard = ({ number, active, lastRecord }) => {
       <AspectRatio
          ratio={1}
          bg={isNumberCardBackground()}
-         rounded='xl'
+         rounded='full'
          color='#fff'
+         fontWeight='bold'
       >
          <Box>{number}</Box>
       </AspectRatio>
